@@ -1,0 +1,127 @@
+<html>
+
+<head>
+
+    <style>
+        input[type=button] {
+            display: block;
+            margin: 20px;
+        }
+
+        div {
+            margin: 20px;
+            border: solid black 1px;
+        }
+    </style>
+
+    <script>
+        let text;
+        window.addEventListener("load", function () {
+            text = document.getElementById("response-text");
+        })
+
+        function installServiceWorker() {
+            if ('serviceWorker' in navigator) {
+
+
+                navigator.serviceWorker.register('service-worker.js').then(function (registration) {
+                    // Registration was successful
+                    console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                    handleUpdates(registration)
+                }, function (err) {
+                    // registration failed :(
+                    console.log('ServiceWorker registration failed: ', err);
+                });
+            }
+        }
+
+        function handleUpdates(reg) {
+            reg.installing; // the installing worker, or undefined
+            reg.waiting; // the waiting worker, or undefined
+            reg.active; // the active worker, or undefined
+
+            reg.addEventListener('updatefound', () => {
+                // A wild service worker has appeared in reg.installing!
+                const newWorker = reg.installing;
+
+                newWorker.state;
+                console.log("state: " + newWorker.state)
+                console.log(newWorker)
+                
+                // "installing" - the install event has fired, but not yet complete
+                // "installed"  - install complete
+                // "activating" - the activate event has fired, but not yet complete
+                // "activated"  - fully active
+                // "redundant"  - discarded. Either failed install, or it's been
+                //                replaced by a newer version
+
+                newWorker.addEventListener('statechange', () => {
+                    // newWorker.state has changed
+                    console.log("Handling Updates: state changed");
+                });
+            });
+        }
+
+        function showServiceWorkerRegistrations() {
+            navigator.serviceWorker.getRegistrations().then(function (registrations) {
+
+                if (registrations.length == 0) {
+                    console.log("No service-worker is registered");
+                    return;
+                }
+
+                console.log("Registered service-workers:");
+                for (let registration of registrations) {
+                    console.log(registration);
+                }
+            })
+        }
+
+        function updateServiceWorker() {
+            navigator.serviceWorker.getRegistrations().then(function (registrations) {
+                for (let registration of registrations) {
+                    registration.update();
+                }
+            });
+        }
+
+        function unregisterServiceWorkerRegistrations() {
+            navigator.serviceWorker.getRegistrations().then(function (registrations) {
+                for (let registration of registrations) {
+                    console.log("Unregistering: " + registration.active.scriptURL);
+                    registration.unregister();
+                }
+            })
+        }
+
+        function getData() {
+            fetch("/current-date")
+                .then(data => {
+                    // console.log(data);
+                    const status = data.status;
+                    data.text().then(data => text.innerHTML = data + " (HTTP: " + status + ")");
+                })
+                .catch(error => console.log(error));
+        }
+    </script>
+
+</head>
+
+<body>
+    <h1>Hello world!</h1>
+
+    <input type="button" name="install-sw" value="install service worker" onclick="installServiceWorker()" />
+
+    <input type="button" name="get-data" value="get data" onclick="getData()" />
+    <div>
+        <span>response:</span>
+        <span id="response-text"></span>
+    </div>
+
+    <input type="button" name="show-sw" value="show service workers" onclick="showServiceWorkerRegistrations()" />
+    <input type="button" name="update-sw" value="update service workers" onclick="updateServiceWorker()" />
+    <input type="button" name="unregister-sw" value="unregister service workers"
+        onclick="unregisterServiceWorkerRegistrations()" />
+</body>
+
+</html>
