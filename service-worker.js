@@ -2,8 +2,13 @@
 
 self.addEventListener('install', function (event) {
     // Perform install steps
-    console.log("service-worker - install event")
-    console.log(self)
+    console.log("service-worker - install event");
+    console.log(self);
+    self.skipWaiting(); // will activate itself after update, fetch events will be handled immediately
+    // event.waitUntil(
+        // all important work should be done here
+        // console.log("// service-worker installation logic")
+    //   );
 });
 
 
@@ -19,15 +24,14 @@ self.addEventListener('activate', event => {
     // Take control of all pages under this SW's scope immediately,
     // instead of waiting for reload/navigation.
     console.log("service-worker - activate event")
-    event.waitUntil(self.clients.claim());
+    event.waitUntil(self.clients.claim()); // client == tab
   });
 
 self.addEventListener('fetch', function (event) {
+    console.log("service-worker - fetch event");
 
-    const prefix="current date: "
+    const prefix="v7 - current date: ";
     const dateResponse = new Response(prefix + new Date().toUTCString());
-
-    console.log("service-worker - fetch event")
     // console.log(event)
 
     if(event.request.url.includes("current-date")) {

@@ -44,10 +44,9 @@
                 // A wild service worker has appeared in reg.installing!
                 const newWorker = reg.installing;
 
-                newWorker.state;
                 console.log("state: " + newWorker.state)
                 console.log(newWorker)
-                
+
                 // "installing" - the install event has fired, but not yet complete
                 // "installed"  - install complete
                 // "activating" - the activate event has fired, but not yet complete
@@ -57,7 +56,7 @@
 
                 newWorker.addEventListener('statechange', () => {
                     // newWorker.state has changed
-                    console.log("Handling Updates: state changed");
+                    console.log("Handling Updates: state changed - new state: ?");
                 });
             });
         }
@@ -78,11 +77,16 @@
         }
 
         function updateServiceWorker() {
+            // this the same as: F5 + installServiceWorker()
             navigator.serviceWorker.getRegistrations().then(function (registrations) {
                 for (let registration of registrations) {
                     registration.update();
                 }
             });
+        }
+
+        function activateServiceWorker() {
+
         }
 
         function unregisterServiceWorkerRegistrations() {
@@ -113,6 +117,7 @@
     <input type="button" name="install-sw" value="install service worker" onclick="installServiceWorker()" />
 
     <input type="button" name="get-data" value="get data" onclick="getData()" />
+    <!-- todo: demonstrate context of service worker - now it handles all requests o server -->
     <div>
         <span>response:</span>
         <span id="response-text"></span>
@@ -120,8 +125,10 @@
 
     <input type="button" name="show-sw" value="show service workers" onclick="showServiceWorkerRegistrations()" />
     <input type="button" name="update-sw" value="update service workers" onclick="updateServiceWorker()" />
-    <input type="button" name="unregister-sw" value="unregister service workers"
-        onclick="unregisterServiceWorkerRegistrations()" />
+    <input type="button" name="activate-sw" value="activate service workers" onclick="activateServiceWorker()" />
+    <input type="button" name="unregister-sw" value="unregister service workers" onclick="unregisterServiceWorkerRegistrations()" />
+
+    <!-- todo: communication via messages: http://craig-russell.co.uk/2016/01/29/service-worker-messaging.html#.XJgH0Nv0miw -->
 </body>
 
 </html>
