@@ -85,10 +85,6 @@
             });
         }
 
-        function activateServiceWorker() {
-
-        }
-
         function unregisterServiceWorkerRegistrations() {
             navigator.serviceWorker.getRegistrations().then(function (registrations) {
                 for (let registration of registrations) {
@@ -125,7 +121,6 @@
 
     <input type="button" name="show-sw" value="show service workers" onclick="showServiceWorkerRegistrations()" />
     <input type="button" name="update-sw" value="update service workers" onclick="updateServiceWorker()" />
-    <input type="button" name="activate-sw" value="activate service workers" onclick="activateServiceWorker()" />
     <input type="button" name="unregister-sw" value="unregister service workers" onclick="unregisterServiceWorkerRegistrations()" />
 
     <!-- todo: communication via messages: http://craig-russell.co.uk/2016/01/29/service-worker-messaging.html#.XJgH0Nv0miw -->

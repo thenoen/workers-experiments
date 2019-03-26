@@ -4,7 +4,7 @@ self.addEventListener('install', function (event) {
     // Perform install steps
     console.log("service-worker - install event");
     console.log(self);
-    self.skipWaiting(); // will activate itself after update, fetch events will be handled immediately
+    self.skipWaiting(); // will trigger activate event after update, fetch events will be handled immediately
     // event.waitUntil(
         // all important work should be done here
         // console.log("// service-worker installation logic")
@@ -30,7 +30,7 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', function (event) {
     console.log("service-worker - fetch event");
 
-    const prefix="v7 - current date: ";
+    const prefix="v2 - current date: ";
     const dateResponse = new Response(prefix + new Date().toUTCString());
     // console.log(event)
 
